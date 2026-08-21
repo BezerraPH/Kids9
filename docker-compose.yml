@@ -1,0 +1,66 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: kids9_postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: kids9_secure_password
+      POSTGRES_DB: kids9
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./src/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d kids9"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  waha:
+    image: devlikeapro/waha:latest
+    container_name: kids9_waha_api
+    restart: always
+    ports:
+      - "8000:3000"
+    environment:
+      - WAHA_LOG_LEVEL=info
+      - WAHA_PRINT_QR=true
+      - WAHA_NO_API_KEY=true
+      - WHATSAPP_DEFAULT_ENGINE=NOWEB
+    volumes:
+      - ./waha_sessions:/app/.sessions
+
+  app:
+    build: .
+    container_name: kids9_backend_app
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+      waha:
+        condition: service_started
+    environment:
+      - PORT=3000
+      - NODE_ENV=production
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=kids9_secure_password
+      - DB_NAME=kids9
+      - WHATSAPP_PROVIDER=free # 'free' para WAHA ou 'official' para Meta API
+      - WAHA_API_URL=http://waha:3000
+      - WAHA_SESSION_NAME=NTEK
+      - META_WA_TOKEN=seu_meta_token_aqui
+      - META_WA_PHONE_NUMBER_ID=seu_phone_number_id_aqui
+      - META_WA_API_VERSION=v18.0
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
+volumes:
+  pgdata:
+    driver: local

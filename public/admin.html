@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kids9 - Admin Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="admin">
+
+  <!-- TELA DE LOGIN DO ADMIN -->
+  <div id="admin-login-screen">
+    <div class="admin-login-card">
+      <div class="app-brand-icon" style="margin-bottom: 20px;">🔒</div>
+      <h2>Gestão Kids9</h2>
+      <p class="hint" style="margin-bottom: 30px;">Acesso administrativo restrito</p>
+      
+      <form id="admin-login-form" style="text-align: left; display:flex; flex-direction:column; gap:14px;">
+        <div class="field">
+          <label>PIN de Administrador</label>
+          <input type="password" id="admin-pin-input" class="input" placeholder="Padrão: 4321" maxlength="4" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Autenticar</button>
+      </form>
+      <a href="index.html" style="display: block; margin-top: 30px; font-size: 0.8rem;">← Voltar ao Início</a>
+    </div>
+  </div>
+
+  <!-- LAYOUT DO DASHBOARD -->
+  <div id="admin-layout-wrapper">
+    <div class="admin-layout">
+      <!-- Sidebar do Admin -->
+      <aside class="admin-sidebar">
+        <div class="brand">
+          <div class="mark">🧒</div>
+          <span>Kids9 Admin</span>
+        </div>
+        
+        <div class="sidebar-group">Operação</div>
+        <button class="sidebar-item active" data-page="adm-page-dashboard">Dashboard</button>
+        <button class="sidebar-item" data-page="adm-page-history">Histórico Geral</button>
+        
+        <div class="sidebar-group" style="margin-top:24px;">Sistema</div>
+        <button class="sidebar-item" data-page="adm-page-config">Configurações</button>
+
+        <div style="flex:1;"></div>
+        <a href="index.html" class="sidebar-item" style="text-align:center; margin-top:20px; color:var(--accent);">Sair do painel</a>
+      </aside>
+
+      <!-- Conteúdo Principal do Admin -->
+      <div class="admin-content-wrapper">
+        
+        <!-- SUB-PÁGINA: DASHBOARD -->
+        <div id="adm-page-dashboard" class="admin-page active">
+          
+          <div class="section-head">
+            <span class="section-num">01 / DASHBOARD</span>
+            <h2>Resumo de Hoje</h2>
+          </div>
+          
+          <!-- KPIs -->
+          <div class="kpis">
+            <div class="kpi">
+              <span class="kl">Crianças ativas agora</span>
+              <div class="kv" id="kpi-active">0</div>
+              <span class="kd flat" id="kpi-active-desc">Capacidade total: 20</span>
+            </div>
+            <div class="kpi">
+              <span class="kl">Faturamento hoje</span>
+              <div class="kv" id="kpi-revenue">R$ 0,00</div>
+              <span class="kd up">Em andamento</span>
+            </div>
+            <div class="kpi">
+              <span class="kl">Ticket médio hoje</span>
+              <div class="kv" id="kpi-avg-ticket">R$ 0,00</div>
+              <span class="kd flat">Média</span>
+            </div>
+            <div class="kpi">
+              <span class="kl">Check-ins totais</span>
+              <div class="kv" id="kpi-total-checkins">0</div>
+              <span class="kd flat">Entradas hoje</span>
+            </div>
+          </div>
+
+          <div class="cols2">
+            <!-- Gráfico de Ocupação por Hora -->
+            <div class="panel chart-panel">
+              <div class="panel-head">
+                <h3>Ocupação por hora</h3>
+                <span class="legend">Fluxo de crianças ao longo do dia</span>
+              </div>
+              <div class="chart" id="occupancy-chart">
+                <!-- Colunas dinâmicas via JS -->
+              </div>
+            </div>
+
+            <!-- Tabela de Últimos Check-ins -->
+            <div class="panel">
+              <div class="panel-head">
+                <h3>Últimas entradas</h3>
+                <span class="legend">Acompanhamento em tempo real</span>
+              </div>
+              <div class="table-container">
+                <table class="adm-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Criança</th>
+                      <th>Pagamento</th>
+                      <th>Entrada</th>
+                      <th>Tempo / Saída</th>
+                      <th>Valor</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-recent-tbody">
+                    <!-- Dinâmico -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUB-PÁGINA: HISTÓRICO GERAL -->
+        <div id="adm-page-history" class="admin-page">
+          <div class="section-head">
+            <span class="section-num">02 / OPERAÇÃO</span>
+            <h2>Histórico de Check-ins</h2>
+          </div>
+          
+          <div class="panel">
+            <div class="panel-head">
+              <h3>Todos os registros</h3>
+              <div class="history-filters">
+                <div class="search-box" style="border: 1px solid var(--line);">
+                  <input type="text" id="history-search" placeholder="Filtrar por nome ou celular...">
+                </div>
+              </div>
+            </div>
+            <div class="table-container">
+              <table class="adm-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Criança</th>
+                    <th>Responsável</th>
+                    <th>Atração</th>
+                    <th>Tempo</th>
+                    <th>Entrada</th>
+                    <th>Saída</th>
+                    <th>PIN</th>
+                    <th>Valor</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-history-tbody">
+                  <!-- Dinâmico -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUB-PÁGINA: CONFIGURAÇÕES -->
+        <div id="adm-page-config" class="admin-page">
+          <div class="section-head">
+            <span class="section-num">03 / SISTEMA</span>
+            <h2>Configurações da Unidade</h2>
+          </div>
+
+          <div class="panel" style="max-width: 600px;">
+            <form id="config-form" class="config-form-body">
+              <div class="field">
+                <label>Nome da Unidade</label>
+                <input type="text" class="input" value="Kids9 Park Iguatemi L2" readonly>
+              </div>
+              <div class="field">
+                <label>Antecedência de Alerta WhatsApp (Minutos)</label>
+                <input type="number" class="input" value="5" min="1" max="15">
+                <p class="hint">Define quantos minutos antes do término da atração o WhatsApp de alerta deve ser disparado.</p>
+              </div>
+              <div class="field">
+                <label>Template de Check-in (Entrada)</label>
+                <textarea class="input" rows="3" readonly style="resize:none;">Olá! Sua criança acaba de fazer o check-in no brinquedo do Shopping {shopping}. Para realizar o check-out com segurança, informe o código PIN: {pin}.</textarea>
+              </div>
+              <div class="field">
+                <label>Template de Vencimento</label>
+                <textarea class="input" rows="3" readonly style="resize:none;">Olá! Restam apenas 5 minutos de tempo de brinquedo para a criança {childName}. Por favor, aproxime-se do balcão para realizar o check-out.</textarea>
+              </div>
+              <button type="button" class="btn btn-primary" style="margin-top:10px;" onclick="showToast('Configurações salvas localmente!', 'success')">Salvar Preferências</button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js?v=1.0.1"></script>
+</body>
+</html>

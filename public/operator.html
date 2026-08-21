@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kids9 - Operador</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="operator">
+  
+  <div class="app-container">
+    <div class="screen" style="border-radius: 0; box-shadow: none;">
+      
+      <!-- Statusbar do Celular -->
+      <div class="statusbar">
+        <span id="phone-time">--:--</span>
+        <div style="display:flex; gap:4px;">📶 🔋</div>
+      </div>
+      
+      <!-- TELA DE LOGIN DO OPERADOR -->
+      <div id="op-screen-login" class="screen-content active">
+        <div class="login-container">
+          <div class="app-brand-icon">🧒</div>
+          <h2>Kids9</h2>
+          <p class="subtitle">Shopping Iguatemi · Piso L2</p>
+          
+          <form id="login-form">
+            <div class="field">
+              <label>Código da Unidade</label>
+              <input type="text" class="input" value="IGT-002" required readonly>
+            </div>
+            <div class="field">
+              <label>PIN do Operador (Padrão: 1234)</label>
+              <input type="password" class="input" placeholder="Digite seu PIN numérico" id="login-pin" maxlength="4" required>
+            </div>
+            <button type="submit" class="btn btn-teal" style="margin-top: 10px;">Acessar Sistema</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- TELA DE LISTA DE ATIVOS -->
+      <div id="op-screen-active" class="screen-content">
+        <div class="app-header">
+          <div class="usage-row">
+            <div class="ttl" style="display:flex; align-items:center; justify-content:space-between; width:100%;">
+              <span>Crianças Ativas</span>
+              <button type="button" id="operator-logout-btn" style="background:rgba(255,255,255,0.15); border:none; color:var(--primary-ink); font-size:0.75rem; padding:4px 8px; border-radius:6px; cursor:pointer; font-weight:600; transition:all 0.2s;">Sair</button>
+            </div>
+          </div>
+          <div class="usage-row" style="margin-top:10px;">
+            <div style="font-size:0.8rem; opacity:0.82;">Ocupação</div>
+            <div class="usage-n" id="active-ratio">0 / 20</div>
+          </div>
+          <div class="usage-bar"><div class="usage-fill" id="active-progress-bar" style="width: 0%;"></div></div>
+        </div>
+        <div class="app-body">
+          <div class="search-box">
+            <input type="text" id="search-active-input" placeholder="Buscar criança...">
+          </div>
+          <div class="actives-list" id="op-active-list">
+            <div style="font-size: 0.85rem; color: var(--ink-faint); text-align: center; margin-top: 20px;">Nenhuma criança ativa no momento.</div>
+          </div>
+        </div>
+        <button class="fab" id="open-checkin-btn">+</button>
+      </div>
+
+      <!-- TELA DE NOVO CHECK-IN -->
+      <div id="op-screen-checkin" class="screen-content">
+        <div class="app-header">
+          <div class="row">
+            <button type="button" class="back-btn" data-target="op-screen-active">←</button>
+            <div class="ttl">Nova entrada</div>
+          </div>
+        </div>
+        <form id="checkin-form" class="app-body">
+          <div class="field">
+            <label>Nome da Criança</label>
+            <input type="text" id="checkin-child-name" class="input" placeholder="Ex: Lucas Silva" required>
+          </div>
+          <div class="field">
+            <label>Celular do Responsável</label>
+            <input type="tel" id="checkin-parent-phone" class="input" placeholder="(XX) XXXXX-XXXX" required>
+          </div>
+          <div class="field">
+            <label>Atração</label>
+            <div class="chiprow" id="attraction-chips">
+              <span class="chip sel" data-value="Piscina de bolinhas">Bolinhas</span>
+              <span class="chip" data-value="Pula-pula">Pula-pula</span>
+              <span class="chip" data-value="Cama elástica">Cama elástica</span>
+            </div>
+          </div>
+          <div class="field">
+            <label>Tempo Contratado</label>
+            <div class="chiprow" id="time-chips">
+              <span class="chip sel" data-value="30" data-price="30.00">30 min</span>
+              <span class="chip" data-value="60" data-price="50.00">1 hora</span>
+              <span class="chip" data-value="120" data-price="80.00">2 horas</span>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Pagamento</label>
+              <select id="checkin-payment-method" class="input">
+                <option value="Pix">Pix</option>
+                <option value="Dinheiro">Dinheiro</option>
+                <option value="Cartão">Cartão</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Valor (R$)</label>
+              <input type="number" id="checkin-payment-value" class="input" value="30.00" step="0.01" required>
+            </div>
+          </div>
+          <div class="form-spacer"></div>
+          <button type="submit" class="btn btn-primary">Iniciar tempo</button>
+        </form>
+      </div>
+
+      <!-- TELA DE CHECK-OUT -->
+      <div id="op-screen-checkout" class="screen-content">
+        <div class="app-header">
+          <div class="row">
+            <button type="button" class="back-btn" data-target="op-screen-active">←</button>
+            <div class="ttl">Finalizar Saída</div>
+          </div>
+        </div>
+        <div class="app-body">
+          <div class="receipt" id="checkout-receipt">
+            <!-- Preenchido via JS -->
+          </div>
+
+          <div class="field checkout-pin-field" style="margin-top: 10px;">
+            <label>PIN de Segurança</label>
+            <input type="text" id="checkout-pin-input" class="input" placeholder="Enviado no WhatsApp" maxlength="6">
+            <p class="hint">Peça ao responsável o código recebido no WhatsApp na hora da entrada.</p>
+          </div>
+
+          <button type="button" class="btn btn-ghost" id="admin-bypass-btn" style="margin-top: 10px;">Desbloqueio Admin</button>
+
+          <div class="form-spacer"></div>
+          <button type="button" class="btn btn-teal" id="confirm-checkout-btn">Confirmar saída</button>
+        </div>
+      </div>
+      
+    </div> <!-- .screen -->
+  </div> <!-- .app-container -->
+
+  <!-- MODAL DE ADMIN BYPASS -->
+  <div class="modal-overlay" id="admin-modal">
+    <div class="modal-card">
+      <h3>Liberação Administrativa</h3>
+      <p>Apenas caso o responsável perca o acesso ao PIN de segurança.</p>
+      <div class="field">
+        <label>PIN Admin</label>
+        <input type="password" id="admin-bypass-pin-input" class="input" placeholder="4 dígitos" maxlength="4">
+      </div>
+      <div style="display:flex; gap:10px; margin-top:24px;">
+        <button type="button" class="btn btn-ghost" id="cancel-admin-modal" style="flex:1;">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="confirm-admin-bypass" style="flex:1;">Liberar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js?v=1.0.1"></script>
+</body>
+</html>

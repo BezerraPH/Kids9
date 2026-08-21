@@ -1,0 +1,1261 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+/* SISTEMA DE DESIGN KIDS9 - STYLES CSS (Premium) */
+
+:root {
+  /* CORES CLARAS - Baseado em kids9.html */
+  --bg: #F3F6F5;
+  --surface: #FFFFFF;
+  --surface-alt: #EAF0EE;
+  
+  --ink: #152420;
+  --ink-soft: #4B6360;
+  --ink-faint: #7C918D;
+  
+  --line: #DBE5E2;
+  
+  --primary: #0E6F6A;
+  --primary-strong: #0A5551;
+  --primary-ink: #FFFFFF;
+  --primary-soft: #E3F1EF;
+  
+  --accent: #E5487A;
+  --accent-strong: #C22F5F;
+  --accent-soft: #FCE4EC;
+  
+  --ok: #1E8449;
+  --ok-soft: #E4F5EA;
+  --warn: #A8670A;
+  --warn-soft: #FBF0DC;
+  --crit: #C7392A;
+  --crit-soft: #FCE7E4;
+  
+  /* SOMBRAS */
+  --shadow-sm: 0 1px 2px rgba(21,36,32,.07);
+  --shadow-md: 0 10px 30px -14px rgba(21,36,32,.28);
+  
+  /* BEZEL DO CELULAR (Operador) */
+  --bezel: #1C2926;
+  --bezel-hi: #2E403C;
+  
+  /* TIPOGRAFIA */
+  --font-display: 'Outfit', Georgia, 'Iowan Old Style', serif;
+  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+
+  /* RADII (Arredondamento) */
+  --radius-sm: 9px;
+  --radius-md: 11px;
+  --radius-lg: 14px;
+}
+
+/* TEMA ESCURO (Usado na TV) */
+[data-theme="dark"] {
+  --bg: #0E1917;
+  --surface: #15251F;
+  --surface-alt: #1B302A;
+  
+  --ink: #EAF3F0;
+  --ink-soft: #AFC6C0;
+  --ink-faint: #75948D;
+  
+  --line: #254038;
+  
+  --primary: #4FC7BB;
+  --primary-strong: #7DDACE;
+  --primary-ink: #052622;
+  --primary-soft: #193A34;
+  
+  --accent: #FF80AC;
+  --accent-strong: #FFA5C4;
+  --accent-soft: #3A2030;
+  
+  --ok: #4FCB84;
+  --ok-soft: #16321F;
+  --warn: #F0B429;
+  --warn-soft: #372B0F;
+  --crit: #FF6B5B;
+  --crit-soft: #3A1C18;
+  
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
+  --shadow-md: 0 10px 30px -14px rgba(0,0,0,.7);
+}
+
+/* Reset e ConfiguraÃ§Ãµes Globais */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--ink);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  text-wrap: balance;
+  margin: 0;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+h2 { font-size: 1.65rem; letter-spacing: -.01em; }
+h3 { font-size: 1.05rem; }
+a { color: var(--primary); text-decoration: none; }
+p { margin: 0; }
+
+.eyebrow {
+  font-family: var(--font-body); 
+  font-size: .72rem; 
+  font-weight: 700; 
+  letter-spacing: .11em;
+  text-transform: uppercase; 
+  color: var(--primary);
+}
+
+
+/* ==========================================================================
+   1. ESTILOS DO SIMULADOR DE CELULAR (OPERADOR)
+   ========================================================================== */
+.app-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  position: relative;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ESTÃ‰TICA DO APARELHO DE CELULAR (Phone wrapper opcional) */
+.phone-bezel {
+  width: 100%;
+  max-width: 400px;
+  height: 100dvh;
+  max-height: 850px;
+  background: var(--surface);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+@media (min-width: 600px) {
+  .phone-bezel {
+    width: 375px;
+    height: 812px; /* ProporÃ§Ã£o tÃ­pica do iPhone X */
+    border-radius: 38px;
+    background: var(--bezel);
+    padding: 9px;
+    box-shadow: var(--shadow-md), inset 0 0 0 1px var(--bezel-hi);
+  }
+  
+  .phone-notch {
+    position: absolute; 
+    top: 9px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    width: 84px; 
+    height: 20px;
+    background: var(--bezel); 
+    border-radius: 0 0 14px 14px; 
+    z-index: 100;
+  }
+}
+
+.screen {
+  width: 100%; 
+  height: 100%; 
+  background: var(--surface); 
+  border-radius: 0; 
+  overflow: hidden;
+  display: flex; 
+  flex-direction: column; 
+  position: relative;
+}
+
+@media (min-width: 600px) {
+  .screen { border-radius: 29px; }
+}
+
+.statusbar {
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  padding: 9px 20px 2px;
+  font-family: var(--font-mono); 
+  font-size: .68rem; 
+  color: var(--ink); 
+  font-weight: 600; 
+  flex-shrink: 0;
+  height: 25px;
+}
+
+/* CONTEÃšDO DA TELA DO CELULAR */
+.screen-content {
+  flex: 1;
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  top: 25px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+  background: var(--bg);
+}
+.screen-content.active {
+  display: flex;
+}
+
+/* ESTILOS DE ELEMENTOS DO CELULAR */
+.app-header {
+  background: var(--primary); 
+  color: var(--primary-ink); 
+  padding: 24px 18px 16px; /* espaÃ§o pro statusBar em alguns casos */
+  flex-shrink: 0;
+}
+
+.app-header .row {
+  display: flex; 
+  align-items: center; 
+  gap: 10px;
+}
+
+.app-header .back-btn {
+  color: var(--primary-ink);
+  font-size: 1.15rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.app-header .ttl {
+  font-family: var(--font-display); 
+  font-weight: 700; 
+  font-size: 1.22rem;
+  color: var(--primary-ink);
+}
+
+.app-header .sub {
+  font-size: .72rem; 
+  opacity: .82; 
+  margin-top: 2px;
+  color: var(--primary-ink);
+}
+
+.app-header .usage-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.app-header .usage-n {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  opacity: 0.9;
+  font-weight: 600;
+}
+
+.app-header .usage-bar {
+  height: 5px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.2);
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.app-header .usage-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 99px;
+  transition: width 0.3s ease;
+}
+
+.app-body {
+  padding: 16px 16px calc(24px + env(safe-area-inset-bottom)); 
+  flex: 1; 
+  overflow-y: auto;
+  display: flex; 
+  flex-direction: column; 
+  gap: 12px;
+}
+
+/* LOGIN */
+.login-container {
+  padding: 30px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  justify-content: center;
+  height: 100%;
+}
+
+.app-brand-icon {
+  width: 64px; 
+  height: 64px;
+  background: var(--primary);
+  color: var(--primary-ink);
+  font-size: 2.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  margin: 0 auto;
+  box-shadow: var(--shadow-md);
+}
+
+.login-container h2 {
+  font-size: 1.4rem;
+}
+
+.login-container .subtitle {
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  margin-top: -12px;
+}
+
+.login-container form {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* CAMPOS E INPUTS */
+.field {
+  display: flex; 
+  flex-direction: column; 
+  gap: 5px;
+}
+
+.field label {
+  font-size: .68rem; 
+  font-weight: 700; 
+  color: var(--ink-faint); 
+  text-transform: uppercase; 
+  letter-spacing: .04em;
+}
+
+.field .input {
+  border: 1.5px solid var(--line); 
+  border-radius: var(--radius-sm); 
+  padding: 9px 11px; 
+  font-size: .82rem; 
+  color: var(--ink);
+  background: var(--surface-alt);
+  width: 100%;
+  outline: none;
+  font-family: var(--font-body);
+  transition: all 0.2s ease;
+}
+
+.field .input:focus {
+  border-color: var(--primary);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px var(--primary-soft);
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 10px;
+}
+
+/* CHIPS */
+.chiprow {
+  display: flex; 
+  gap: 7px; 
+  flex-wrap: wrap;
+}
+
+.chip {
+  font-size: .74rem; 
+  padding: 7px 11px; 
+  border-radius: 99px; 
+  border: 1.5px solid var(--line); 
+  color: var(--ink-soft); 
+  background: var(--surface);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.chip:hover {
+  background: var(--surface-alt);
+  color: var(--ink);
+}
+
+.chip.sel {
+  border-color: var(--primary); 
+  background: var(--primary-soft); 
+  color: var(--primary); 
+  font-weight: 700;
+}
+
+.hint {
+  font-size: .7rem; 
+  color: var(--ink-faint); 
+  line-height: 1.4;
+}
+
+/* BOTÃ•ES */
+.btn {
+  border: none; 
+  border-radius: var(--radius-md); 
+  padding: 11px; 
+  font-size: .86rem; 
+  font-weight: 700; 
+  text-align: center; 
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.btn-primary { 
+  background: var(--accent); 
+  color: var(--primary-ink); 
+}
+.btn-primary:hover { 
+  background: var(--accent-strong); 
+}
+
+.btn-teal { 
+  background: var(--primary); 
+  color: var(--primary-ink); 
+}
+.btn-teal:hover { 
+  background: var(--primary-strong); 
+}
+
+.btn-ghost {
+  background: transparent; 
+  color: var(--primary); 
+  border: 1.5px solid var(--primary-soft);
+}
+.btn-ghost:hover {
+  background: var(--primary-soft);
+}
+
+.form-spacer {
+  flex: 1;
+}
+
+/* PESQUISA */
+.search-box {
+  background: var(--surface-alt);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+}
+
+.search-box input {
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 0.8rem;
+  width: 100%;
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+
+/* LISTA DE ATIVOS */
+.actives-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.list-row {
+  display: flex; 
+  align-items: center; 
+  gap: 10px; 
+  padding: 10px 0; 
+  border-bottom: 1px solid var(--line);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.list-row:hover {
+  background: var(--surface-alt);
+  border-radius: 8px;
+  padding-left: 8px;
+  padding-right: 8px;
+  margin-left: -8px;
+  margin-right: -8px;
+  border-bottom-color: transparent;
+}
+
+.list-row .avatar {
+  width: 34px; 
+  height: 34px; 
+  border-radius: 10px; 
+  background: var(--surface-alt); 
+  display: flex; 
+  align-items: center;
+  justify-content: center; 
+  font-size: 1rem; 
+  flex-shrink: 0;
+}
+
+.list-row .who {
+  flex: 1; 
+  min-width: 0;
+}
+
+.list-row .who .name {
+  font-size: .83rem; 
+  font-weight: 600; 
+  color: var(--ink);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.list-row .who .attr {
+  font-size: .7rem; 
+  color: var(--ink-faint);
+}
+
+.list-row .time-col {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.list-row .time {
+  font-family: var(--font-mono); 
+  font-weight: 700; 
+  font-size: .86rem; 
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+/* BADGES / PILLS */
+.pill {
+  font-size: .62rem; 
+  font-weight: 700; 
+  padding: 3px 7px; 
+  border-radius: 99px; 
+  display: inline-flex; 
+  align-items: center; 
+  gap: 4px; 
+  letter-spacing: .02em;
+  text-transform: uppercase;
+}
+
+.pill::before {
+  content: ''; 
+  width: 5px; 
+  height: 5px; 
+  border-radius: 50%;
+}
+
+.pill-ok { background: var(--ok-soft); color: var(--ok); }
+.pill-ok::before { background: var(--ok); }
+
+.pill-warn { background: var(--warn-soft); color: var(--warn); }
+.pill-warn::before { background: var(--warn); }
+
+.pill-crit { background: var(--crit-soft); color: var(--crit); }
+.pill-crit::before {
+  background: var(--crit);
+  animation: blip 1.4s ease-in-out infinite;
+}
+
+@keyframes blip {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+
+/* FAB BUTTON */
+.fab {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--primary-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-md);
+  font-size: 1.8rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.fab:hover {
+  background: var(--accent-strong);
+  transform: scale(1.05);
+}
+
+/* RECEIPT (CHECKOUT SCREEN) */
+.receipt {
+  background: var(--surface-alt);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid var(--line);
+}
+
+.receipt .rr {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+}
+
+.receipt .rr .k {
+  color: var(--ink-faint);
+}
+
+.receipt .rr .v {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.receipt hr {
+  border: none;
+  border-top: 1px dashed var(--line);
+  margin: 4px 0;
+}
+
+/* Modais e Overlays */
+.modal-overlay { 
+  position: absolute; 
+  top: 0; left: 0; width: 100%; height: 100%; 
+  background: rgba(14, 25, 23, 0.8); 
+  backdrop-filter: blur(5px); 
+  z-index: 1000; 
+  display: none; 
+  align-items: center; 
+  justify-content: center; 
+}
+.modal-overlay.active { display: flex; }
+.modal-card { 
+  background: var(--surface); 
+  padding: 24px; 
+  border-radius: var(--radius-lg); 
+  width: 90%; max-width: 400px; 
+  border: 1px solid var(--line); 
+  box-shadow: var(--shadow-md);
+}
+
+.modal-card h3 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-family: var(--font-display);
+}
+.modal-card p {
+  color: var(--ink-faint);
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+}
+
+
+/* ==========================================================================
+   2. ESTILOS DO PAINEL ADMINISTRATIVO (DESKTOP PANEL)
+   ========================================================================== */
+
+#admin-layout-wrapper {
+  display: none;
+  flex: 1;
+  width: 100vw;
+  min-height: 100dvh;
+}
+
+#admin-view {
+  background: var(--bg);
+  display: none;
+}
+
+#admin-view.active {
+  display: grid; /* CORREÇÃO: era flex e quebrava o grid */
+}
+
+.admin-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  width: 100%;
+  height: 100%;
+}
+
+.admin-sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--line);
+  padding: 28px 18px 28px 28px; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 2px;
+  height: 100%;
+}
+
+.admin-sidebar .brand {
+  display: flex; 
+  align-items: center; 
+  gap: 9px; 
+  margin-bottom: 22px;
+}
+.admin-sidebar .brand .mark {
+  width: 30px; height: 30px; 
+  border-radius: 9px; 
+  background: var(--primary);
+  display: flex; align-items: center; justify-content: center; 
+  flex-shrink: 0;
+  color: var(--primary-ink);
+}
+.admin-sidebar .brand span {
+  font-family: var(--font-display); 
+  font-weight: 700; 
+  font-size: 1.05rem;
+  color: var(--ink);
+}
+
+.admin-sidebar .sidebar-group {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--primary);
+  letter-spacing: 0.11em;
+  margin: 16px 0 6px 12px;
+  font-family: var(--font-body);
+}
+
+.admin-sidebar .sidebar-item {
+  color: var(--ink-soft); 
+  text-decoration: none; 
+  font-size: .86rem; 
+  padding: 9px 10px;
+  border-radius: 8px; 
+  border-left: 2px solid transparent;
+  background: transparent;
+  border-top: none; border-right: none; border-bottom: none;
+  text-align: left;
+  cursor: pointer;
+  font-weight: 500;
+  font-family: var(--font-body);
+  transition: all 0.2s ease;
+  margin-bottom: 2px;
+}
+
+.admin-sidebar .sidebar-item:hover {
+  color: var(--ink); 
+  background: var(--surface-alt);
+}
+
+.admin-sidebar .sidebar-item.active {
+  color: var(--ink);
+  background: var(--surface-alt);
+  font-weight: 600;
+}
+
+.admin-content-wrapper {
+  padding: 30px 40px;
+  overflow-y: auto;
+  height: 100%;
+  flex: 1;
+}
+
+.admin-page {
+  display: none;
+  flex-direction: column;
+  gap: 32px;
+  animation: fadeIn 0.3s ease;
+  max-width: 1200px;
+}
+
+.admin-page.active {
+  display: flex;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ADMIN LOGIN */
+#admin-login-screen { 
+  position: absolute; 
+  top: 0; left: 0; width: 100%; height: 100%; 
+  background: var(--bg); 
+  display: flex; align-items: center; justify-content: center; 
+  z-index: 1000; 
+}
+.admin-login-card { 
+  background: var(--surface); 
+  padding: 40px; 
+  border-radius: var(--radius-lg); 
+  width: 100%; max-width: 400px; 
+  text-align: center; 
+  border: 1px solid var(--line); 
+  box-shadow: var(--shadow-sm); 
+}
+.admin-login-card h2 { 
+  font-family: var(--font-display); 
+  color: var(--ink); 
+  font-size: 2rem; 
+  margin: 0 0 10px 0; 
+}
+
+/* KPIS */
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.kpi {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 26px 22px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.kpi .kl {
+  font-size: .82rem; 
+  color: var(--ink-faint); 
+  margin-top: 2px;
+}
+
+.kpi .kv {
+  font-family: var(--font-mono); 
+  font-size: 1.7rem; 
+  font-weight: 700; 
+  font-variant-numeric: tabular-nums; 
+  color: var(--ink);
+  margin-top: 12px;
+}
+
+.kpi .kd {
+  font-size: 0.76rem;
+  font-weight: 600;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.kpi .kd.up { color: var(--ok); }
+.kpi .kd.flat { color: var(--ink-soft); }
+
+/* PAINEL */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 26px 22px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.panel-head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.panel-head h3 {
+  font-size: 1.25rem;
+  font-family: var(--font-display);
+}
+
+.panel-head .legend {
+  font-size: 0.82rem;
+  color: var(--ink-faint);
+}
+
+.history-filters {
+  margin-top: 10px;
+  max-width: 400px;
+}
+
+/* TABELAS */
+.table-container {
+  overflow-x: auto;
+}
+
+.adm-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.adm-table th {
+  padding: 12px 16px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--line);
+}
+
+.adm-table td {
+  padding: 14px 16px;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  border-bottom: 1px solid var(--line);
+}
+
+.adm-table tr:hover td {
+  background: var(--surface-alt);
+  color: var(--ink);
+}
+
+.adm-table .t-id {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+}
+
+.adm-table .t-strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.chart-panel .chart {
+  height: 250px;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding-top: 20px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.chart-col-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  gap: 8px;
+  group: hover;
+}
+
+.chart-col {
+  width: 100%;
+  max-width: 40px;
+  background: var(--primary-soft);
+  border-radius: 4px 4px 0 0;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.chart-col:hover {
+  background: var(--primary);
+}
+
+.chart-col-label {
+  font-size: 0.7rem;
+  color: var(--ink-faint);
+}
+
+.chart-col-val {
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--ink);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.chart-col:hover .chart-col-val {
+  opacity: 1;
+}
+
+.config-form-body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.config-form-body .input {
+  width: 100%;
+}
+
+
+/* ==========================================================================
+   3. ESTILOS DO PAINEL DE TV PÃšBLICA (DARK MODE)
+   ========================================================================== */
+
+#tv-view {
+  background: var(--bg);
+  color: var(--ink);
+  display: none;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+  height: 100dvh;
+}
+
+#tv-view.active {
+  display: flex;
+}
+
+.tv-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 40px 60px;
+  height: 100%;
+}
+
+.tv-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 24px;
+}
+
+.tv-logo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.tv-logo .tv-mark {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+}
+
+.tv-logo h1 {
+  font-size: 2.5rem;
+}
+
+.tv-clock {
+  font-family: var(--font-mono);
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+/* GRID DE CARDS NA TV */
+.tv-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+  overflow-y: auto;
+  align-content: start;
+}
+
+.tv-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  position: relative;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.tv-card.crit {
+  border-color: var(--crit);
+  background: linear-gradient(180deg, var(--crit-soft), var(--surface) 120px);
+}
+
+.tv-card.warn {
+  border-color: var(--warn);
+  background: linear-gradient(180deg, var(--warn-soft), var(--surface) 120px);
+}
+
+.tv-card .kid-info h3 {
+  font-size: 1.8rem;
+  margin-bottom: 6px;
+}
+
+.tv-card .kid-info p {
+  color: var(--ink-soft);
+  font-size: 1rem;
+}
+
+.tv-card .time-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.tv-card .time-info .tv-time {
+  font-family: var(--font-mono);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--ok);
+  font-variant-numeric: tabular-nums;
+}
+
+.tv-card.warn .time-info .tv-time {
+  color: var(--warn);
+}
+
+.tv-card.crit .time-info .tv-time {
+  color: var(--crit);
+  animation: tv-flash 1s infinite alternate;
+}
+
+.tv-footer {
+  margin-top: 30px;
+  flex-shrink: 0;
+}
+
+.footer-alert-bar {
+  background: var(--primary-soft);
+  border: 1px solid var(--primary);
+  border-radius: var(--radius-md);
+  padding: 16px 24px;
+  font-size: 1.1rem;
+  text-align: center;
+  color: var(--ink);
+}
+
+.footer-alert-bar span {
+  font-weight: 700;
+  color: var(--primary);
+}
+/* ==========================================================================
+   4. MEDIA QUERIES (RESPONSIVIDADE PURA)
+   ========================================================================== */
+
+@media (max-width: 900px) {
+  /* Admin Sidebar -> Bottom Bar */
+  .admin-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+  }
+  .admin-sidebar {
+    order: 2; /* joga pro final */
+    flex-direction: row;
+    height: auto;
+    padding: 10px;
+    border-right: none;
+    border-top: 1px solid var(--line);
+    justify-content: space-around;
+    align-items: center;
+    background: var(--surface);
+    flex-shrink: 0;
+  }
+  .admin-sidebar .brand,
+  .admin-sidebar .sidebar-group {
+    display: none;
+  }
+  .admin-sidebar .sidebar-item {
+    margin-bottom: 0;
+    padding: 12px 10px;
+    font-size: 0.8rem;
+    text-align: center;
+    flex: 1;
+    border-radius: 12px;
+  }
+  .admin-content-wrapper {
+    order: 1;
+    padding: 20px;
+    flex: 1;
+  }
+  
+  /* TV Panel */
+  .tv-header {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .tv-logo {
+    justify-content: center;
+  }
+  .tv-logo h1 {
+    font-size: 2rem;
+  }
+  .tv-clock {
+    font-size: 2.2rem;
+  }
+  .tv-grid {
+    grid-template-columns: 1fr;
+  }
+  .tv-container {
+    padding: 20px;
+  }
+}
+
+/* Operador - Quebra do Bezel em tablets/telas menores */
+@media (max-width: 600px) {
+  .phone-notch {
+    display: none !important;
+  }
+  .screen {
+    border-radius: 0 !important;
+  }
+}
+
+body[data-page="operator"] { 
+  align-items: center; 
+  justify-content: center; 
+  background-color: #12151c; 
+}
+
+/* Transição suave entre as telas do operador */
+.screen-content.active {
+  display: flex;
+  animation: screenSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes screenSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Efeito de Blip com Animação Premium */
+.pill-crit::before {
+  background: var(--crit);
+  animation: blip 1s infinite alternate;
+}

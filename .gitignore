@@ -1,0 +1,16 @@
+# Dependency directories
+node_modules/
+
+# Environment variables
+.env
+
+# WAHA and session files
+waha_sessions/
+tokens/
+
+# OS files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store

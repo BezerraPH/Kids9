@@ -1,0 +1,20 @@
+# Ignorar pastas de dependências locais e temporárias do Docker Build
+node_modules
+npm-debug.log
+
+# Ignorar os tokens/sessões do WhatsApp Web do Venom-bot
+# Estes arquivos são montados dinamicamente via volume e não devem ser incluídos na imagem
+tokens
+
+# Ignorar controle de versão e configurações locais
+.git
+.gitignore
+.dockerignore
+.env
+.env.example
+*.md
+docker-compose.yml
+Dockerfile
+Kids9.html
+Kids9_files
+detalhes.txt

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kids9 - TV Público</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="tv">
+
+  <div id="tv-view" class="active">
+    <div class="tv-container">
+      
+      <!-- Cabeçalho -->
+      <div class="tv-header">
+        <div class="tv-logo">
+          <div class="tv-mark">🧒</div>
+          <h1>Kids9 Play</h1>
+        </div>
+        <div class="tv-clock" id="tv-clock-display">--:--</div>
+      </div>
+
+      <!-- Grid Principal -->
+      <div class="tv-grid" id="tv-grid-container">
+        <!-- Renderizado dinamicamente via JS -->
+      </div>
+
+      <!-- Rodapé Opcional / Mensagem rotativa -->
+      <div class="tv-footer" id="tv-footer-alert" style="display:none;">
+        <div class="footer-alert-bar">
+          Atenção responsável por <span id="tv-alert-name"></span>: O tempo encerra em breve!
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="app.js?v=1.0.1"></script>
+</body>
+</html>
