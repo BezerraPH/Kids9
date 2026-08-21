@@ -1,10 +1,18 @@
+/**
+ * @file waha.provider.js
+ * @description Estratégia de envio Gratuita utilizando o WAHA (WhatsApp HTTP API).
+ * Totalmente compatível com WAHA v2. Gerencia automaticamente o ciclo de vida da sessão
+ * no startup e simula o envio de templates oficiais da Meta transformando-os em mensagens
+ * textuais amigáveis.
+ */
+
 const axios = require('axios');
 const WhatsAppProvider = require('./whatsapp.provider');
 const config = require('../../config/environment');
 
 /**
- * Estratégia de envio Gratuita utilizando o WAHA (WhatsApp HTTP API).
- * Totalmente compatível com WAHA v2 e autenticação via X-Api-Key.
+ * Provedor de mensagens gratuito WAHA.
+ * @extends WhatsAppProvider
  */
 class WahaProvider extends WhatsAppProvider {
   constructor() {
@@ -13,7 +21,7 @@ class WahaProvider extends WhatsAppProvider {
     this.apiKey = config.whatsapp.waha.apiKey;
     this.sessionName = config.whatsapp.waha.sessionName || 'default';
 
-    // Configurar cliente HTTP Axios com cabeçalhos de autenticação se disponíveis
+    // Configurar cliente HTTP Axios padrão com cabeçalhos de autenticação do WAHA se disponíveis
     const headers = { 'Content-Type': 'application/json' };
     if (this.apiKey) {
       headers['X-Api-Key'] = this.apiKey;
@@ -26,21 +34,25 @@ class WahaProvider extends WhatsAppProvider {
   }
 
   /**
-   * Tenta resolver o nome da sessão ativa em execução.
-   * Útil para curar race conditions de inicialização.
+   * Tenta resolver o nome da sessão ativa em execução no WAHA.
+   * Útil para recuperar sessões que estejam operacionais sem depender
+   * apenas do nome estático configurado no arquivo .env.
+   * 
+   * @async
+   * @returns {Promise<string>} O nome da sessão ativa resolvida (ex: 'default', 'NTEK')
    */
   async getOrResolveSession() {
-    // Se a sessão atual já for diferente de 'default', consideramos válida (ou configurada explicitamente)
+    // Se a sessão configurada já for diferente do padrão 'default', consideramos válida
     if (this.sessionName !== 'default') {
       return this.sessionName;
     }
 
     try {
-      console.log(`[WAHA-API] Tentando resolver sessão ativa dinamicamente...`);
+      console.log(`[WAHA-API] Tentando resolver sessão ativa dinamicamente no servidor WAHA...`);
       const response = await this.client.get('/api/sessions?all=true');
       const sessions = response.data || [];
 
-      // Tentar identificar uma sessão funcional ativa (WORKING)
+      // Procura alguma sessão que esteja com o status operacional 'WORKING'
       const workingSession = sessions.find(s => s.status === 'WORKING');
       if (workingSession) {
         this.sessionName = workingSession.name;
@@ -57,30 +69,36 @@ class WahaProvider extends WhatsAppProvider {
   }
 
   /**
-   * Inicializa a conexão com o WAHA, descobrindo e iniciando a sessão adequada.
+   * Inicializa a conexão com o servidor WAHA.
+   * Consulta as sessões existentes, valida o status da sessão configurada, cria caso não exista
+   * e envia o sinal de inicialização (start) de forma assíncrona.
+   * 
+   * @override
+   * @async
+   * @returns {Promise<void>}
    */
   async init() {
     console.log(`[WAHA-API] Inicializando conexão com o WAHA em ${this.apiUrl}...`);
     try {
-      // 1. Consultar a lista de sessões disponíveis
+      // 1. Consultar a lista de todas as sessões registradas no WAHA
       let sessions = [];
       try {
         const response = await this.client.get('/api/sessions?all=true');
         sessions = response.data || [];
-        console.log(`[WAHA-API] Sessões encontradas no banco do WAHA:`, sessions.map(s => `${s.name} (${s.status})`));
+        console.log(`[WAHA-API] Sessões encontradas na base do WAHA:`, sessions.map(s => `${s.name} (${s.status})`));
       } catch (listErr) {
         console.warn('[WAHA-API WARNING] Falha ao recuperar lista de sessões no bootstrap:', listErr.message);
       }
 
-      // 2. Se a sessão configurada ('NTEK' por exemplo) existir na lista, mantemos ela
+      // 2. Verificar se a sessão configurada está presente no servidor
       const configSessionExists = sessions.some(s => s.name === this.sessionName);
 
       if (!configSessionExists) {
-        // Se a configurada não existir, tenta encontrar qualquer outra WORKING ou registrada
+        // Se a sessão configurada não existir, tenta se associar a qualquer outra ativa ('WORKING')
         const workingSession = sessions.find(s => s.status === 'WORKING');
         if (workingSession) {
           this.sessionName = workingSession.name;
-          console.log(`[WAHA-API] Sessão ativa operacional localizada e vinculada: '${this.sessionName}'`);
+          console.log(`[WAHA-API] Sessão configurada ausente. Usando sessão ativa localizada: '${this.sessionName}'`);
         } else if (sessions.length > 0) {
           this.sessionName = sessions[0].name;
           console.log(`[WAHA-API] Selecionando primeira sessão registrada no WAHA: '${this.sessionName}'`);
@@ -89,7 +107,7 @@ class WahaProvider extends WhatsAppProvider {
         console.log(`[WAHA-API] Sessão configurada identificada na base do WAHA: '${this.sessionName}'`);
       }
 
-      // 3. Garantir que a sessão está rodando (enviar comando start se necessário)
+      // 3. Garantir que a sessão resolvida esteja rodando ('WORKING')
       const sessionUrl = `/api/sessions/${this.sessionName}`;
       let startSession = false;
 
@@ -102,13 +120,14 @@ class WahaProvider extends WhatsAppProvider {
           startSession = true;
         }
       } catch (getErr) {
+        // Se retornar status 404, significa que a sessão ainda não existe e precisa ser criada
         if (getErr.response && getErr.response.status === 404) {
-          console.log(`[WAHA-API] Sessão '${this.sessionName}' inexistente no WAHA. Criando sessão...`);
+          console.log(`[WAHA-API] Sessão '${this.sessionName}' inexistente no WAHA. Solicitando criação...`);
           try {
             await this.client.post('/api/sessions', { name: this.sessionName });
             console.log(`[WAHA-API] Sessão '${this.sessionName}' criada com sucesso.`);
           } catch (createErr) {
-            console.error(`[WAHA-API] Falha ao criar a sessão:`, createErr.message);
+            console.error(`[WAHA-API] Falha ao criar a sessão no servidor:`, createErr.message);
           }
           startSession = true;
         } else {
@@ -117,10 +136,10 @@ class WahaProvider extends WhatsAppProvider {
         }
       }
 
+      // 4. Se a sessão não estiver ativa, envia a rota POST /api/sessions/{session}/start
       if (startSession) {
-        console.log(`[WAHA-API] Enviando sinal de START para a sessão '${this.sessionName}'...`);
+        console.log(`[WAHA-API] Enviando comando de START para a sessão '${this.sessionName}'...`);
         try {
-          // Rota WAHA v2: POST /api/sessions/{session}/start
           await this.client.post(`/api/sessions/${this.sessionName}/start`, {});
           console.log(`[WAHA-API] Comando de inicialização enviado com sucesso para a sessão '${this.sessionName}'.`);
         } catch (startErr) {
@@ -132,18 +151,24 @@ class WahaProvider extends WhatsAppProvider {
 
     } catch (error) {
       const errorMsg = error.response ? JSON.stringify(error.response.data) : error.message;
-      console.error('[WAHA-API ERROR] Falha crítica de inicialização com o WAHA:', errorMsg);
+      console.error('[WAHA-API ERROR] Falha crítica ao inicializar módulo WAHA:', errorMsg);
     }
   }
 
   /**
    * Envia uma mensagem de texto simples via WAHA.
+   * 
+   * @override
+   * @async
+   * @param {string} to Número de telefone do destinatário
+   * @param {string} text Conteúdo de texto da mensagem
+   * @returns {Promise<any>} Dados de resposta da API
    */
   async sendText(to, text) {
     const session = await this.getOrResolveSession();
     let cleanNumber = to.replace(/\D/g, '');
 
-    // Se o usuário digitou um 0 na frente do DDD (ex: 081995436658)
+    // Se o usuário digitou um 0 na frente do DDD (ex: 081995436658 -> 81995436658)
     if (cleanNumber.startsWith('0') && cleanNumber.length >= 11) {
       cleanNumber = cleanNumber.substring(1);
     }
@@ -169,10 +194,10 @@ class WahaProvider extends WhatsAppProvider {
 
       cleanNumber = `55${cleanNumber}`;
     } else if (cleanNumber.length < 10) {
-      // Se por algum motivo o número for muito curto, e não tiver código de país
-      console.warn(`[WAHA-API WARNING] Número muito curto: ${cleanNumber}`);
+      console.warn(`[WAHA-API WARNING] Número telefônico muito curto para normalização: ${cleanNumber}`);
     }
 
+    // O WAHA exige que o chatId termine com a extensão '@c.us' para chats individuais
     const chatId = cleanNumber.includes('@c.us') ? cleanNumber : `${cleanNumber}@c.us`;
 
     console.log(`[WAHA-API] Enviando mensagem de texto para ${chatId} usando a sessão '${session}'...`);
@@ -193,26 +218,33 @@ class WahaProvider extends WhatsAppProvider {
   }
 
   /**
-   * Simula o envio de template gerando uma mensagem de texto estruturada.
+   * Simula o envio de template convertendo parâmetros estruturados em uma mensagem de texto amigável.
+   * 
+   * @override
+   * @async
+   * @param {string} to Número de telefone do destinatário
+   * @param {string} templateName Nome do template (ex: 'template_checkin_shopping')
+   * @param {any[]} variables Lista ordenada de valores dinâmicos
+   * @returns {Promise<any>} Dados de resposta da API
    */
   async sendTemplate(to, templateName, variables) {
     let text = '';
 
-    // Mapeamento dos templates oficiais para mensagens textuais equivalentes
+    // Mapeamento dos templates oficiais da Meta para textos corridos equivalentes
     if (templateName === 'template_checkin_shopping') {
-      // Garantir que as variÃ¡veis contÃ©m o childName
-      // No checkin.controller, Ã© provÃ¡vel que passamos childName em outro lugar,
-      // mas vamos assumir [childName, shopping, tempo, pin] se tiver 4 args, ou lidar com fallback
-      const childName = variables.length >= 4 ? variables[0] : 'a criança';
+      // Formato esperado das variáveis: [childName, shopping, tempoMinutos, pin]
+      const childName = variables.length >= 4 ? variables[0] : 'A criança';
       const shopping = variables.length >= 4 ? variables[1] : variables[0];
       const tempo = variables.length >= 4 ? variables[2] : variables[1];
       const pin = variables.length >= 4 ? variables[3] : variables[2];
       
       text = `Olá! ${childName} acaba de fazer o check-in no brinquedo do Shopping ${shopping}. O tempo contratado é de ${tempo} minutos. Para realizar o check-out com segurança, informe o código PIN: ${pin} ao funcionário.`;
     } else if (templateName === 'template_five_min_alert') {
+      // Formato esperado das variáveis: [childName]
       const childName = variables[0] || 'a criança';
       text = `Olá! Restam apenas 5 minutos de tempo de brinquedo para ${childName}. Por favor, aproxime-se do balcão para realizar o check-out.`;
     } else {
+      // Fallback genérico para templates desconhecidos
       text = `[Kids9 Alerta] Variáveis: ${variables.join(' | ')}`;
     }
 
