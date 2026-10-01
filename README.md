@@ -1,183 +1,281 @@
-# 🧒 Kids9 Backend & Frontend System
+# 🧒 Kids9 — Sistema Inteligente de Gestão, Monitoramento e Segurança para Espaços Infantis
 
-O **Kids9** é um sistema completo e moderno de check-in, monitoramento e controle de tempo para espaços de lazer infantis (como brinquedotecas, parquinhos de shopping e áreas de recreação). 
+<div align="center">
 
-O sistema oferece controle em tempo real da ocupação do espaço, faturamento diário, liberação de crianças segura via código PIN por WhatsApp (usando o padrão **Strategy** para suportar múltiplos provedores) e notificações automatizadas de tempo restante via **Cron Jobs**.
+![Node.js](https://img.shields.io/badge/Node.js-v18%2B-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Express](https://img.shields.io/badge/Express-4.19-000000?style=for-the-badge&logo=express&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![WhatsApp API](https://img.shields.io/badge/WhatsApp-Cloud%20API%20%2F%20WAHA-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
----
+<p align="center">
+  <b>Sistema completo para controle de tempo, check-in ágil, liberação segura via PIN e alertas automáticos via WhatsApp para brinquedotecas, buffets e parques infantis.</b>
+</p>
 
-## 📋 Funcionalidades Principais
+[Visão Geral](#-visão-geral) •
+[Funcionalidades](#-funcionalidades) •
+[Arquitetura](#-arquitetura-e-design-patterns) •
+[Interfaces](#-telas-e-interfaces) •
+[Como Rodar](#-como-rodar-o-projeto) •
+[API Reference](#-endpoints-da-api) •
+[Segurança & LGPD](#-segurança-e-lgpd)
 
-*   **📱 Portal do Operador (Mobile SPA):**
-    *   Fluxo ágil de check-in com cadastro do nome da criança, telefone do responsável, atração, tempo contratado e valor pago.
-    *   Criação automática de um código PIN aleatório de segurança para liberação de checkout.
-    *   Envio automático do PIN por WhatsApp ao responsável assim que o check-in é salvo.
-    *   Painel visual das crianças ativas com barra de progresso da ocupação atual baseada na capacidade configurada.
-    *   Busca rápida de crianças ativas por nome.
-    *   Checkout seguro exigindo o PIN do responsável ou com liberação manual de supervisor (Bypass por PIN administrativo `4321`).
-*   **📺 Painel da TV Pública (Painel de Monitoramento):**
-    *   Interface de alta visibilidade projetada para telas de monitoramento ou TVs no espaço de lazer.
-    *   Grid responsivo exibindo o tempo restante de cada criança em tempo real.
-    *   Indicação de status por cores:
-        *   🟢 **No prazo** (Tempo restante seguro)
-        *   🟡 **Atenção** (Faltando menos de 10 minutos)
-        *   🔴 **Tempo Esgotado / Acabando** (Faltando menos de 5 minutos ou vencido)
-    *   Barra de alerta dinâmica no rodapé que rola e exibe em destaque o nome das crianças cujos tempos estão prestes a acabar.
-    *   Mascaramento de números de telefone para conformidade com a LGPD.
-*   **📊 Dashboard Administrativo (Desktop):**
-    *   Acesso restrito protegido por PIN administrativo (`4321`).
-    *   Métricas de desempenho em tempo real (KPIs):
-        *   Crianças ativas no momento.
-        *   Faturamento diário acumulado.
-        *   Ticket médio por check-in.
-        *   Total de check-ins realizados no dia.
-    *   Gráfico interativo de ocupação horária por hora de funcionamento (das 10h às 22h).
-    *   Histórico recente de check-ins e tabela completa do histórico dos últimos 100 registros com busca por nome ou celular.
-    *   Configurações gerais do sistema.
+</div>
 
 ---
 
-## 🏗️ Arquitetura do Sistema
+## 🎯 Visão Geral
 
-O sistema é construído sobre uma arquitetura limpa em camadas (Controllers, Services, Providers, Config, Jobs) utilizando Node.js, Express e PostgreSQL.
+O **Kids9** é uma solução completa desenvolvida para modernizar a operação de espaços de recreação infantil (como brinquedotecas em shoppings, parques temáticos e buffets). O sistema resolve as principais dores desse segmento:
+
+1. **Agilidade no Check-in:** Cadastro rápido de crianças e responsáveis sem filas.
+2. **Segurança Reforçada no Checkout:** Liberação da criança exclusivamente mediante apresentação de código **PIN temporário de 4 dígitos** gerado automaticamente e enviado ao WhatsApp do responsável.
+3. **Monitoramento em Tempo Real:** Painel TV interativo com contagem regressiva e alertas visuais por cores para os pais e operadores.
+4. **Comunicação Ativa & Automatizada:** Disparo automático de alertas via WhatsApp quando faltam 5 minutos para o tempo expirar, reduzindo atritos por tempo excedido.
+5. **Controle Financeiro e Operacional:** Dashboard administrativo com faturamento em tempo real, ticket médio e gráfico de ocupação por hora.
+
+---
+
+## ✨ Funcionalidades
+
+### 📱 1. Portal do Operador (Mobile & Tablet First)
+- Cadastro expresso com nome da criança, telefone do responsável com máscara brasileira e seleção de tempo contratado (30, 60, 90+ min).
+- Cálculo automático do valor com base na atração e no tempo.
+- Geração instantânea de PIN único de segurança para retirada.
+- Disparo imediato da mensagem de boas-vindas com o PIN no WhatsApp do responsável.
+- Grid de monitoramento com barra de capacidade do espaço em tempo real.
+- Busca rápida por nome e filtro de status.
+- Checkout seguro por PIN ou liberação supervisionada com PIN mestre de administrador.
+
+### 📺 2. Painel da TV Pública (Monitoramento em Alta Visibilidade)
+- Projetado para televisores e monitores voltados para a área externa/público.
+- Cards dinâmicos com contagem regressiva em tempo real:
+  - 🟢 **Verde (No Prazo):** Mais de 10 minutos restantes.
+  - 🟡 **Amarelo (Atenção):** Menos de 10 minutos restantes.
+  - 🔴 **Vermelho (Esgotado / Alerta):** Menos de 5 minutos ou tempo excedido.
+- Ticker dinâmico no rodapé destacando nomes das crianças com tempo prestes a esgotar.
+- **Privacidade (LGPD):** Mascaramento automático dos números de telefone `(XX) X ****-YYYY`.
+
+### 📊 3. Dashboard Administrativo
+- Proteção de acesso com PIN administrativo (`ADMIN_PIN`).
+- **KPIs em Tempo Real:** Crianças ativas, receita diária acumulada, ticket médio e volume de check-ins do dia.
+- **Gráfico de Ocupação Horária:** Distribuição do fluxo ao longo do horário comercial (10h às 22h).
+- **Histórico Completo:** Tabela com busca, paginação e detalhes de entradas/saídas e meios de pagamento.
+
+---
+
+## 🏗 Arquitetura e Design Patterns
+
+O backend foi construído com arquitetura modular e desacoplada em camadas:
+
+```
+kids9/
+├── src/
+│   ├── config/             # Configurações centralizadas e validação de ambiente
+│   │   ├── database.js     # Pool de conexão PostgreSQL (pg)
+│   │   └── environment.js  # Validação de variáveis obrigatórias
+│   ├── controllers/        # Tratamento de requisições HTTP e status codes
+│   │   └── checkin.controller.js
+│   ├── database/           # Scripts SQL de inicialização e migração
+│   │   └── init.sql
+│   ├── jobs/               # Background Cron Jobs (node-cron)
+│   │   └── alert.job.js    # Varredura a cada 1 min para alerta de 5 minutos
+│   ├── providers/          # Padrão Strategy para gateways de mensageria
+│   │   └── whatsapp/
+│   │       ├── whatsapp.provider.js  # Interface abstrata base
+│   │       ├── waha.provider.js      # Implementação WAHA (Local/Free)
+│   │       ├── meta.provider.js      # Implementação Meta Cloud API (Oficial)
+│   │       └── whatsapp.factory.js   # Factory para instanciar o provider ativo
+│   ├── routes/             # Definição de rotas e middlewares (adminAuth)
+│   │   └── checkin.routes.js
+│   ├── services/           # Regras de negócio e integração
+│   │   ├── checkin.service.js
+│   │   └── messaging.service.js
+│   ├── app.js              # Configuração do Express, middlewares e rotas
+│   └── server.js           # Bootstrap do servidor, conexão com BD e Cron
+├── public/                 # Frontend SPA (Vanilla JS, CSS Moderno, Responsivo)
+│   ├── index.html          # Hub de navegação
+│   ├── operator.html       # Interface do operador
+│   ├── tv.html             # Interface da TV de monitoramento
+│   ├── admin.html          # Dashboard gerencial
+│   ├── styles.css          # Design system com variáveis CSS e dark/light cards
+│   └── app.js              # Lógica de renderização reativa do frontend
+├── docker-compose.yml      # Orquestração completa (Node + Postgres + WAHA)
+├── Dockerfile              # Imagem de produção Node.js
+└── package.json
+```
+
+### 📐 Fluxo de Execução
 
 ```mermaid
 graph TD
-    Client[Navegador Client / SPA] -->|Requisições HTTP| Express[Servidor Express - app.js]
-    Express --> Router[Rotas - checkin.routes.js]
-    Router --> Controller[Controller - checkin.controller.js]
-    Controller --> Service[Serviço - checkin.service.js]
+    User([Usuário / Operador / TV]) -->|HTTP REST| Express[Express Server - app.js]
+    Express --> AuthMiddleware{Middleware Auth?}
+    AuthMiddleware -->|Sim - x-admin-pin| Controller[CheckinController]
+    AuthMiddleware -->|Não - Rota Pública| Controller
     
-    Service --> Database[(PostgreSQL - Database)]
-    Service --> MsgService[Messaging Service]
+    Controller --> Service[CheckinService]
+    Service --> DB[(PostgreSQL)]
+    Service --> MsgService[MessagingService]
     
-    Cron[Cron Job - alert.job.js] -->|Varredura a cada 1 min| Database
-    Cron --> MsgService
+    CronJob[Cron Job - alert.job.js] -->|A cada 1 minuto| DB
+    CronJob -->|Faltam 5 min| MsgService
     
-    MsgService --> Factory[WhatsApp Factory]
-    Factory -->|Strategy Pattern| Waha[WAHA Provider - Gratuito]
-    Factory -->|Strategy Pattern| Meta[Meta Cloud API - Oficial]
+    MsgService --> Factory[WhatsAppFactory]
+    Factory -->|WHATSAPP_PROVIDER=free| WAHA[WAHA Provider]
+    Factory -->|WHATSAPP_PROVIDER=official| Meta[Meta Cloud API Provider]
     
-    Waha -->|HTTP API| WahaContainer[Container WAHA / WhatsApp Web]
-    Meta -->|HTTP POST| MetaAPI[WhatsApp Cloud API Server]
+    WAHA -->|REST API| WAHAService[Container WAHA / WhatsApp Web]
+    Meta -->|Graph API HTTPS| MetaGraphAPI[Meta Graph API]
 ```
 
----
+### 🔌 WhatsApp: Padrão Strategy & Factory
 
-## 🔌 WhatsApp Integration: Padrão Strategy
+O sistema suporta troca instantânea do provedor de WhatsApp apenas alterando uma variável de ambiente:
 
-Para suportar flexibilidade comercial e técnica, o envio de notificações de WhatsApp foi desacoplado usando o padrão de design **Strategy**. O sistema suporta dois provedores ativos selecionáveis pela variável `WHATSAPP_PROVIDER` no `.env`:
-
-### 1. `free` (WAHA - WhatsApp HTTP API)
-*   **Descrição:** Utiliza o projeto open-source WAHA, que encapsula um cliente de WhatsApp Web em um container Docker para permitir automação sem custos por mensagem.
-*   **Inicialização Dinâmica:** No startup, o provedor se conecta ao WAHA, lista as sessões ativas e associa o envio à sessão `WORKING` ativa ou cria e inicializa a sessão configurada de forma assíncrona para não travar a inicialização do Express.
-*   **Simulação de Templates:** Como o WhatsApp Web não possui suporte nativo a templates de mensagens oficiais, o `WahaProvider` mapeia os identificadores de template (`template_checkin_shopping`, `template_five_min_alert`) e gera o texto correspondente de forma programática.
-
-### 2. `official` (Meta/Facebook Cloud API)
-*   **Descrição:** Utiliza a API oficial de nuvem do WhatsApp disponibilizada pela Meta. Recomendado para ambientes de produção escaláveis.
-*   **Validação Estrita:** Exige chaves obrigatórias como o Token de Acesso da Meta (`META_WA_TOKEN`) e o ID do número de telefone (`META_WA_PHONE_NUMBER_ID`).
-*   **Mensagens por Template:** Envia requisições formatadas em JSON correspondendo aos componentes e parâmetros registrados no painel do Meta Business Suite.
-
-*(Nota: Ambos os provedores aplicam automaticamente a regra de normalização de números telefônicos do Brasil, incluindo o tratamento especial do 9º dígito para os DDDs 11 a 28).*
+1. **`free` (WAHA — WhatsApp HTTP API):** Utiliza container local open-source para conexão via WhatsApp Web (QR Code), ideal para desenvolvimento, testes e operações sem custo por mensagem.
+2. **`official` (Meta Cloud API):** Utiliza a API oficial do WhatsApp Business da Meta, recomendada para alta escala e conformidade empresarial com envio de templates homologados.
+3. **Tratamento de Números do Brasil:** Normalização automática de DDI (+55), DDD e inclusão/remoção do 9º dígito para conformidade com a operadora.
 
 ---
 
-## ⏰ Cron Jobs de Alerta
+## 🗄️ Modelo de Dados (PostgreSQL)
 
-O sistema agenda uma tarefa em segundo plano utilizando `node-cron` que roda a **cada 1 minuto** (`*/1 * * * *`). 
-A tarefa realiza as seguintes ações:
-1. Consulta a tabela do banco de dados em busca de registros com status `active`, que ainda não receberam o alerta (`alert_sent = FALSE`), têm menos de 3 tentativas de alerta falhas e cuja previsão de saída ocorre em no máximo 5 minutos a partir do horário atual (`expected_checkout_time <= NOW() + INTERVAL '5 minutes'`).
-2. Dispara a notificação de encerramento do brinquedo (`template_five_min_alert`) pelo provedor de mensagens ativo.
-3. Atualiza o banco de dados marcando o registro como alertado e incrementando as tentativas para evitar loops em caso de falha de conexão ou número inválido.
+### Tabela `checkins`
 
----
-
-## 🗄️ Esquema do Banco de Dados
-
-O banco de dados PostgreSQL contém uma tabela central denominada `checkins`. Abaixo está a estrutura dos campos:
-
-| Campo | Tipo | Descrição |
+| Coluna | Tipo | Descrição |
 | :--- | :--- | :--- |
-| `id` | `SERIAL` (PK) | Identificador único autoincrementado do check-in. |
-| `child_name` | `VARCHAR(100)` | Nome completo da criança. |
-| `parent_phone` | `VARCHAR(20)` | Telefone com DDD do responsável. |
-| `payment_method` | `VARCHAR(50)` | Método de pagamento (ex: Pix, Cartão, Dinheiro). |
-| `payment_value` | `NUMERIC(10,2)` | Valor total cobrado. |
-| `playtime_minutes`| `INTEGER` | Duração contratada em minutos (ex: 30, 60, 90). |
-| `checkin_time` | `TIMESTAMP` | Data/hora de entrada (padrão: `NOW()`). |
-| `expected_checkout_time`| `TIMESTAMP` | Data/hora calculada para a saída. |
-| `actual_checkout_time`| `TIMESTAMP` | Data/hora em que a saída foi confirmada. |
-| `pin` | `VARCHAR(6)` | Código numérico de segurança para checkout. |
-| `status` | `VARCHAR(20)` | Estado do check-in (`active` ou `completed`). |
-| `alert_sent` | `BOOLEAN` | Sinaliza se o alerta de 5 minutos foi disparado (`DEFAULT FALSE`). |
-| `alert_attempts` | `INTEGER` | Contador de tentativas de notificação (`DEFAULT 0`). |
-| `created_at` | `TIMESTAMP` | Registro automático da criação da linha. |
-| `updated_at` | `TIMESTAMP` | Atualizado dinamicamente via Trigger a cada update. |
+| `id` | `SERIAL PRIMARY KEY` | Identificador único do check-in |
+| `child_name` | `VARCHAR(100)` | Nome da criança |
+| `parent_phone` | `VARCHAR(20)` | Telefone com DDD do responsável |
+| `payment_method` | `VARCHAR(50)` | Método de pagamento (Pix, Cartão, Dinheiro) |
+| `payment_value` | `NUMERIC(10,2)` | Valor cobrado pelo tempo |
+| `playtime_minutes`| `INTEGER` | Duração contratada em minutos |
+| `checkin_time` | `TIMESTAMP` | Horário de entrada |
+| `expected_checkout_time` | `TIMESTAMP` | Horário previsto para saída |
+| `actual_checkout_time` | `TIMESTAMP` | Horário efetivo de checkout |
+| `pin` | `VARCHAR(6)` | PIN de 4 dígitos gerado para liberação |
+| `status` | `VARCHAR(20)` | `active` ou `completed` |
+| `alert_sent` | `BOOLEAN` | Indica se o alerta de 5 minutos já foi enviado |
+| `alert_attempts` | `INTEGER` | Contador de tentativas de envio de alerta |
+| `created_at` | `TIMESTAMP` | Data de criação do registro |
+| `updated_at` | `TIMESTAMP` | Data da última atualização |
 
 ---
 
-## ⚙️ Configuração e Instalação
+## 🚀 Como Rodar o Projeto
 
-### Pré-requisitos
-*   Node.js (versão >= 18.0.0)
-*   PostgreSQL instalado e rodando localmente ou via Docker
-*   Acesso ao servidor WAHA (Docker) ou chaves da Meta API (se for usar o modo oficial)
+### Opção 1: Via Docker Compose (Recomendado)
 
-### 1. Clonar e instalar dependências
+A forma mais rápida de subir todo o ecossistema (Aplicação + PostgreSQL + WAHA):
+
 ```bash
-# Navegar até a pasta do projeto
+# 1. Clone o repositório
+git clone https://github.com/BezerraPH/kids9.git
 cd kids9
 
-# Instalar dependências
-npm install
+# 2. Crie o arquivo .env a partir do exemplo
+cp .env.example .env
+
+# 3. Suba todos os serviços
+docker compose up -d --build
+
+# 4. Verifique os logs
+docker compose logs -f app
 ```
 
-### 2. Configurar Variáveis de Ambiente
-Crie um arquivo `.env` na raiz do projeto (use o `.env.example` como guia):
-
-```env
-# Configurações do Servidor
-PORT=3000
-NODE_ENV=development
-ADMIN_PIN=4321
-
-# Configurações do Banco de Dados PostgreSQL
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=seu_usuario_do_banco
-DB_PASSWORD=sua_senha_do_banco
-DB_NAME=kids9
-
-# Provedor de Mensagens WhatsApp: 'free' (WAHA) ou 'official' (Meta API)
-WHATSAPP_PROVIDER=free
-
-# Se usar WHATSAPP_PROVIDER=free:
-WAHA_API_URL=http://localhost:3000
-WAHA_API_KEY=sua_chave_de_api_waha_se_existir
-WAHA_SESSION_NAME=default
-
-# Se usar WHATSAPP_PROVIDER=official:
-META_WA_TOKEN=seu_token_da_meta_aqui
-META_WA_PHONE_NUMBER_ID=seu_phone_number_id_aqui
-META_WA_API_VERSION=v18.0
-```
-
-### 3. Scripts de Inicialização
-
-*   **Inicialização do Banco de Dados:** O sistema executa o script `src/database/init.sql` automaticamente durante o bootstrap se as tabelas ainda não existirem no banco configurado.
-*   **Iniciar em Desenvolvimento (Modo Watcher):**
-    ```bash
-    npm run dev
-    ```
-*   **Iniciar em Produção:**
-    ```bash
-    npm start
-    ```
+Acesse as aplicações em:
+- **Portal Principal:** `http://localhost:3000`
+- **Portal do Operador:** `http://localhost:3000/operator.html`
+- **Painel da TV:** `http://localhost:3000/tv.html`
+- **Dashboard Admin:** `http://localhost:3000/admin.html` *(PIN padrão: `4321`)*
+- **Painel do WAHA (QR Code):** `http://localhost:8000`
 
 ---
 
-## 🛡️ Segurança e LGPD
+### Opção 2: Execução Local (Node.js)
 
-1.  **Bypass Administrativo:** O checkout exige o PIN do responsável. Caso ele o perca, o operador pode acionar um bypass inserindo o PIN administrativo (`4321`). O sistema registra no console quando liberações administrativas ocorrem para auditoria.
-2.  **Mascaramento de Dados:** No painel da TV Pública, que fica exposto para qualquer pessoa ver, o número de telefone do responsável é exibido no formato `(XX) X ****-YYYY` para evitar exposição de dados sensíveis em locais públicos.
-3.  **Privacidade das Sessões:** As variáveis de ambiente do PostgreSQL e das chaves de API não devem ser commitadas no repositório. O arquivo `.gitignore` já exclui arquivos `.env` e pastas temporárias de tokens.
+#### Pré-requisitos:
+- Node.js >= 18.0.0
+- PostgreSQL instalado e rodando na porta `5432`
+
+```bash
+# 1. Instalar dependências
+npm install
+
+# 2. Configurar variáveis de ambiente
+cp .env.example .env
+# Edite o .env com os dados de conexão do seu PostgreSQL local
+
+# 3. Executar o servidor
+npm run dev
+```
+
+*Nota: O banco de dados e suas tabelas/gatilhos são inicializados automaticamente na primeira execução através do `init.sql`.*
+
+---
+
+## 📡 Endpoints da API
+
+### Rotas Operacionais
+
+| Método | Endpoint | Descrição |
+| :--- | :--- | :--- |
+| `POST` | `/api/checkin` | Cria um novo check-in e dispara PIN via WhatsApp |
+| `GET` | `/api/checkin/active` | Lista todos os check-ins ativos com contagem regressiva |
+| `GET` | `/api/checkin/:id` | Retorna detalhes de um check-in específico |
+| `POST` | `/api/checkin/:id/checkout` | Realiza a saída mediante validação do PIN ou PIN administrativo |
+
+#### Exemplo de Payload para Check-in (`POST /api/checkin`):
+```json
+{
+  "childName": "Arthur Silva",
+  "parentPhone": "11987654321",
+  "playtimeMinutes": 60,
+  "paymentMethod": "PIX",
+  "paymentValue": 50.00
+}
+```
+
+#### Resposta:
+```json
+{
+  "id": 1,
+  "child_name": "Arthur Silva",
+  "parent_phone": "11987654321",
+  "playtime_minutes": 60,
+  "pin": "7482",
+  "status": "active",
+  "checkin_time": "2026-10-01T18:00:00.000Z",
+  "expected_checkout_time": "2026-10-01T19:00:00.000Z"
+}
+```
+
+### Rotas Administrativas (Requer cabeçalho `x-admin-pin`)
+
+| Método | Endpoint | Header Requerido | Descrição |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/checkin/history` | `x-admin-pin: 4321` | Retorna histórico dos últimos 100 check-ins |
+| `GET` | `/api/checkin/stats` | `x-admin-pin: 4321` | Retorna KPIs consolidados e ocupação horária |
+
+---
+
+## 🔒 Segurança e LGPD
+
+- **Bypass com Auditoria:** Caso o responsável perca o PIN ou celular descarregue, a liberação pode ser feita por supervisor informando o `ADMIN_PIN`. A ação é auditada e registrada nos logs do sistema.
+- **Proteção Visual em Telas Públicas:** O painel da TV não exibe telefones completos nem dados sensíveis de documentos, garantindo total conformidade com a LGPD.
+- **Proteção de Credenciais:** Arquivos de variáveis `.env`, sessões do WhatsApp e dependências estão estritamente ignorados pelo `.gitignore`.
+
+---
+
+## 👨‍💻 Autor
+
+Desenvolvido por **Pedro Henrique Bezerra**  
+- GitHub: [@BezerraPH](https://github.com/BezerraPH)
+
+---
+
+## 📄 Licença
+
+Este projeto está sob a licença [MIT](LICENSE).
