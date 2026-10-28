@@ -65,6 +65,59 @@ O **Kids9** é uma solução completa desenvolvida para modernizar a operação 
 
 ---
 
+## 🖼️ Telas e Interfaces
+
+### 📱 1. Portal do Operador (Mobile First)
+Interface responsiva otimizada para smartphones e tablets utilizados pelos operadores e monitores no balcão de atendimento:
+
+<div align="center">
+  <table>
+    <tr>
+      <th align="center">Crianças Ativas & Capacidade</th>
+      <th align="center">Novo Check-in Expresso</th>
+      <th align="center">Checkout Seguro com PIN</th>
+    </tr>
+    <tr>
+      <td align="center"><img src="docs/screenshots/02-operador-ativos.png" width="260" alt="Crianças Ativas"></td>
+      <td align="center"><img src="docs/screenshots/03-operador-checkin.png" width="260" alt="Novo Check-in"></td>
+      <td align="center"><img src="docs/screenshots/04-operador-checkout.png" width="260" alt="Finalizar Saída"></td>
+    </tr>
+  </table>
+</div>
+
+---
+
+### 📺 2. Painel da TV Pública (Monitoramento em Alta Definição)
+Tela Full HD (Dark Mode) desenvolvida para televisores voltados para o público externo, permitindo que os pais monitorem o tempo restante com conformidade à LGPD e avisos sonoros/visuais:
+
+<div align="center">
+  <img src="docs/screenshots/05-tv-painel-publico.png" width="95%" alt="Painel TV Pública">
+</div>
+
+---
+
+### 📊 3. Dashboard Administrativo & Gestão
+Visão consolidada em tempo real com métricas financeiras, gráfico de fluxo por hora e histórico detalhado para auditoria:
+
+<div align="center">
+  <p><b>Painel de Indicadores e Ocupação por Hora</b></p>
+  <img src="docs/screenshots/06-admin-dashboard.png" width="95%" alt="Dashboard Administrativo">
+  <br><br>
+  <p><b>Histórico Completo de Check-ins com Filtro de Busca</b></p>
+  <img src="docs/screenshots/07-admin-historico.png" width="95%" alt="Histórico Administrativo">
+</div>
+
+---
+
+### 🌐 4. Hub Central de Acesso
+Portal inicial de navegação com roteamento facilitado entre os módulos do sistema:
+
+<div align="center">
+  <img src="docs/screenshots/01-hub-portais.png" width="75%" alt="Hub Central Kids9">
+</div>
+
+---
+
 ## 🏗 Arquitetura e Design Patterns
 
 O backend foi construído com arquitetura modular e desacoplada em camadas:
